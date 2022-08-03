@@ -26,7 +26,7 @@ export class CargarCreditosPreAprobadosService {
     return this._httpClient.delete<any>(`${environment.apiUrl}/corp/creditoArchivos/delete/${id}`);
   }
   subirArchivosPreAprobados(id) {
-    return this._httpClient.post<any>(`${environment.apiUrl}/corp/creditoArchivos/upload/creditos/preaprobados/${id}`, {});
+    return this._httpClient.post<any>(`${environment.apiUrl}/corp/creditoArchivos/upload/creditos/preaprobados/empleados/${id}`, {});
   }
 
 }
