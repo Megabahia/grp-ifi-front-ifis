@@ -28,6 +28,15 @@ export const menu: CoreMenu[] = [
                 icon: 'user',
                 url: 'cargar-creditos/preaprobados',
             },
+            {
+                id: 'cargaMicroCreditosPre',
+                title: 'Cargar micro-créditos pre-aprobados',
+                // translate: 'MENU.HOME',
+                // role: [Role.SuperMonedas],
+                type: 'item',
+                icon: 'user',
+                url: 'cargar-creditos/micro-creditos/pre-aprobados',
+            },
             /*{
               id: "operacionCreditosPre",
               title: "Operación créditos preaprobados",

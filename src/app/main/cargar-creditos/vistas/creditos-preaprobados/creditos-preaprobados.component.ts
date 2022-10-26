@@ -1,20 +1,21 @@
-import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { CoreMenuService } from '@core/components/core-menu/core-menu.service';
-import { NgbModal, NgbPagination } from '@ng-bootstrap/ng-bootstrap';
-import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
-import { Subject } from 'rxjs';
-import { CobroMonedas } from '../../models/cargar-creditos';
+import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {CoreMenuService} from '@core/components/core-menu/core-menu.service';
+import {NgbModal, NgbPagination} from '@ng-bootstrap/ng-bootstrap';
+import {SwiperConfigInterface} from 'ngx-swiper-wrapper';
+import {Subject} from 'rxjs';
+import {CobroMonedas} from '../../models/cargar-creditos';
 import * as XLSX from 'xlsx-js-style';
+
 type AOA = any[][];
 import moment from 'moment';
-import { CargarCreditosPreAprobadosService } from './creditos-preaprobados.service';
+import {CargarCreditosPreAprobadosService} from './creditos-preaprobados.service';
 
 @Component({
   selector: 'app-cargar-creditos-preaprobados',
   templateUrl: './creditos-preaprobados.component.html',
   styleUrls: ['./creditos-preaprobados.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  host: { class: 'ecommerce-application' }
+  host: {class: 'ecommerce-application'}
 })
 export class CargarCreditosPreAprobadosComponent implements OnInit {
   @ViewChild('mensajeModal') mensajeModal;
@@ -54,7 +55,6 @@ export class CargarCreditosPreAprobadosComponent implements OnInit {
     private _cargarCreditosPreAprobados: CargarCreditosPreAprobadosService,
     private _coreMenuService: CoreMenuService,
     private modalService: NgbModal,
-
   ) {
     this._unsubscribeAll = new Subject();
     this.usuario = this._coreMenuService.grpIfisUser;
@@ -63,11 +63,12 @@ export class CargarCreditosPreAprobadosComponent implements OnInit {
   ngOnInit(): void {
     this.obtenerListaArchivosPreAprobados();
   }
+
   cargarCreditos(event) {
     const archivo = event.target.files[0];
     this.nuevaImagen = new FormData();
     this.nuevaImagen.append('linkArchivo', archivo, archivo.name);
-    this.nuevaImagen.append('tamanioArchivo', String(archivo.size / (1000000 )));
+    this.nuevaImagen.append('tamanioArchivo', String(archivo.size / (1000000)));
     this.nombreArchivo = archivo.name;
     this.nuevaImagen.append('empresa_financiera', this.usuario.empresa._id);
     this.archivo = true;
@@ -101,6 +102,7 @@ export class CargarCreditosPreAprobadosComponent implements OnInit {
       reader.readAsBinaryString(target.files[0]);
     }
   }
+
   cargar() {
     this.submitted = true;
     if (!this.nuevaImagen.get('linkArchivo')) {
@@ -126,6 +128,7 @@ export class CargarCreditosPreAprobadosComponent implements OnInit {
       this.obtenerListaArchivosPreAprobados();
     });
   }
+
   eliminarArchivoPreAprobado(id) {
     this._cargarCreditosPreAprobados.eliminarArchivosPreAprobados(id).subscribe(info => {
       this.obtenerListaArchivosPreAprobados();
@@ -133,6 +136,7 @@ export class CargarCreditosPreAprobadosComponent implements OnInit {
       this.abrirModal(this.mensajeModal);
     });
   }
+
   subirArchivoPreAprobado(id) {
     this._cargarCreditosPreAprobados.subirArchivosPreAprobados(id).subscribe(info => {
       this.obtenerListaArchivosPreAprobados();
@@ -141,6 +145,7 @@ export class CargarCreditosPreAprobadosComponent implements OnInit {
       this.abrirModal(this.mensajeModal);
     });
   }
+
   obtenerListaArchivosPreAprobados() {
     this._cargarCreditosPreAprobados.obtenerListaArchivosPreAprobados({
       page_size: 10,
@@ -153,19 +158,21 @@ export class CargarCreditosPreAprobadosComponent implements OnInit {
       campania: '',
       tipoCredito: 'PreAprobado'
     }).subscribe((info) => {
-          this.listaArchivosPreAprobados = info.info;
-        },
-        (error) => {
+        this.listaArchivosPreAprobados = info.info;
+      },
+      (error) => {
 
-        });
+      });
   }
 
   abrirModal(modal) {
-    this.modalService.open(modal)
+    this.modalService.open(modal);
   }
+
   cerrarModal() {
     this.modalService.dismissAll();
   }
+
   ngOnDestroy(): void {
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next();
