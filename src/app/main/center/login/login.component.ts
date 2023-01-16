@@ -29,6 +29,8 @@ export class LoginComponent implements OnInit {
 
   // Private
   private _unsubscribeAll: Subject<any>;
+  public captcha: boolean;
+  public siteKey: string;
 
   /**
    * Constructor
@@ -42,6 +44,7 @@ export class LoginComponent implements OnInit {
     private _router: Router,
     private _authenticationService: AuthenticationService
   ) {
+    this.siteKey = '6LfPwgAkAAAAAF6z9L1DEChrBeq7dMTigroN4eq_';
     this._unsubscribeAll = new Subject();
 
     // Configure the layout
@@ -81,7 +84,7 @@ export class LoginComponent implements OnInit {
     this.submitted = true;
 
     // stop here if form is invalid
-    if (this.loginForm.invalid) {
+    if (this.loginForm.invalid || !this.captcha) {
       return;
     }
 
@@ -131,6 +134,10 @@ export class LoginComponent implements OnInit {
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next();
     this._unsubscribeAll.complete();
+  }
+
+  captchaValidado(evento) {
+    this.captcha = true;
   }
 
 }
