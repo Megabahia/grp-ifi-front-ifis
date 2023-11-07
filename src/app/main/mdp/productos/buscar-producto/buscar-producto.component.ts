@@ -1,6 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { ExportService } from 'app/services/export/export.service';
-import { ProductosService } from '../productos.service';
+import {Component, OnInit} from '@angular/core';
+import {ExportService} from 'app/services/export/export.service';
+import {ProductosService} from '../productos.service';
+
+/**
+ * IFIS
+ * ifis
+ * ESta pantalla sirve para mostrar los productos
+ * Rutas:
+ * `${apiUrl}/mdp/productos/search/producto/`,
+ */
 
 @Component({
   selector: 'app-buscar-producto',
@@ -13,53 +21,56 @@ export class BuscarProductoComponent implements OnInit {
   pageSize: any = 10;
   maxSize;
   collectionSize;
-  codigoBarras="";
-  nombre="";
+  codigoBarras = '';
+  nombre = '';
   infoExportar;
+
   constructor(
-    private productosService:ProductosService,
-    private exportFile:ExportService
-  ) { }
+    private productosService: ProductosService,
+    private exportFile: ExportService
+  ) {
+  }
 
   ngOnInit(): void {
     this.menu = {
-      modulo:"mdp",
-      seccion: "prodBusq"
+      modulo: 'mdp',
+      seccion: 'prodBusq'
     };
     this.obtenerListaProductos();
   }
 
-  obtenerListaProductos(){
+  obtenerListaProductos() {
     this.productosService.buscarListaProductos({
-      nombre:this.nombre,
-      codigoBarras:this.codigoBarras,
-        page:this.page-1,
-        page_size:this.pageSize
-    }).subscribe((info)=>{
-        this.listaProductos = info.info;
-        this.collectionSize = info.cont
+      nombre: this.nombre,
+      codigoBarras: this.codigoBarras,
+      page: this.page - 1,
+      page_size: this.pageSize
+    }).subscribe((info) => {
+      this.listaProductos = info.info;
+      this.collectionSize = info.cont;
     });
   }
-  exportarExcel(){
+
+  exportarExcel() {
     this.infoExportar = [];
-        const headers = ['Código de Barras', 'Nombre', 'Categoría', 'Subcategoría', 'Stock', 'Estado'];
-        this.listaProductos.forEach((row: any) => {
-          
-          const values = [];
-          values.push(row['codigoBarras']);
-          values.push(row['nombre']);
-          values.push(row['categoria']);
-          values.push(row['subCategoria']);
-          values.push(row['stock']);
-          values.push(row['estado']);
-          this.infoExportar.push(values);
-        });
-        const reportData = {
-          title: 'Reporte de Productos',
-          data: this.infoExportar,
-          headers
-        };
-  
-        this.exportFile.exportExcel(reportData);
+    const headers = ['Código de Barras', 'Nombre', 'Categoría', 'Subcategoría', 'Stock', 'Estado'];
+    this.listaProductos.forEach((row: any) => {
+
+      const values = [];
+      values.push(row['codigoBarras']);
+      values.push(row['nombre']);
+      values.push(row['categoria']);
+      values.push(row['subCategoria']);
+      values.push(row['stock']);
+      values.push(row['estado']);
+      this.infoExportar.push(values);
+    });
+    const reportData = {
+      title: 'Reporte de Productos',
+      data: this.infoExportar,
+      headers
+    };
+
+    this.exportFile.exportExcel(reportData);
   }
 }

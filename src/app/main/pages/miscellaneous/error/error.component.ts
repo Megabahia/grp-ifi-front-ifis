@@ -1,26 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {Subject} from 'rxjs';
 
-import { CoreConfigService } from '@core/services/config.service';
+import {CoreConfigService} from '@core/services/config.service';
+
+/**
+ * Bigpuntos
+ * Personas
+ * Esta pantalla sirve para mostrar cuando no existe la pantalla
+ */
 
 @Component({
   selector: 'app-error',
   templateUrl: './error.component.html',
   styleUrls: ['./error.component.scss']
 })
-export class ErrorComponent implements OnInit {
+export class ErrorComponent implements OnInit, OnDestroy {
   public coreConfig: any;
 
   // Private
   private _unsubscribeAll: Subject<any>;
 
-  /**
-   * Constructor
-   *
-   * @param {CoreConfigService} _coreConfigService
-   */
   constructor(private _coreConfigService: CoreConfigService) {
     this._unsubscribeAll = new Subject();
 

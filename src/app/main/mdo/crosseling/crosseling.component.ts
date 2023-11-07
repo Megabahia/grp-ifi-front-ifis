@@ -1,16 +1,26 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { NgbModal, NgbPagination } from "@ng-bootstrap/ng-bootstrap";
-import { DatePipe } from "@angular/common";
-import { CrossService, PrediccionesCross } from "./cross.service";
-import { ParamService } from "app/services/param/param.service";
-import { ExportService } from "app/services/export/export.service";
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {NgbModal, NgbPagination} from '@ng-bootstrap/ng-bootstrap';
+import {DatePipe} from '@angular/common';
+import {CrossService, PrediccionesCross} from './cross.service';
+import {ParamService} from 'app/services/param/param.service';
+import {ExportService} from 'app/services/export/export.service';
+
+/**
+ * IFIS
+ * ifis
+ * Esta pantalla sirve para exportar el crosseling
+ * Rutas:
+ * `${apiUrl}/mdo/prediccionCrosseling/list/`,
+ * `${apiUrl}/mdo/prediccionCrosseling/productosImagenes/${id}`
+ * `${apiUrl}/mdo/prediccionCrosseling/prediccionCrosseling/${id}`
+ */
 
 @Component({
-  selector: "app-crosseling",
-  templateUrl: "./crosseling.component.html",
+  selector: 'app-crosseling',
+  templateUrl: './crosseling.component.html',
   providers: [DatePipe],
 })
-export class CrosselingComponent implements OnInit {
+export class CrosselingComponent implements OnInit, AfterViewInit {
   @ViewChild(NgbPagination) paginator: NgbPagination;
   menu;
   listaPredicciones: PrediccionesCross;
@@ -18,14 +28,14 @@ export class CrosselingComponent implements OnInit {
   pageSize: any = 10;
   maxSize;
   collectionSize;
-  fecha = "";
-  inicio = "";
-  fin = "";
+  fecha = '';
+  inicio = '';
+  fin = '';
   ultimosProductos;
   prediccion;
   cliente;
-  tipoCliente = "";
-  tipoClienteModal = "";
+  tipoCliente = '';
+  tipoClienteModal = '';
   identificacion;
   infoExportar = [];
 
@@ -41,36 +51,39 @@ export class CrosselingComponent implements OnInit {
 
   ngOnInit(): void {
     this.menu = {
-      modulo: "mdo",
-      seccion: "predCross",
+      modulo: 'mdo',
+      seccion: 'predCross',
     };
   }
+
   async ngAfterViewInit() {
     this.iniciarPaginador();
     this.obtenerListaPredicciones();
   }
+
   async iniciarPaginador() {
     this.paginator.pageChange.subscribe(() => {
       this.obtenerListaPredicciones();
     });
   }
+
   obtenerListaPredicciones() {
-    let fecha = this.fecha.split(" to ");
-    this.inicio = fecha[0] ? fecha[0] : "";
-    this.fin = fecha[1] ? fecha[1] : "";
+    const fecha = this.fecha.split(' to ');
+    this.inicio = fecha[0] ? fecha[0] : '';
+    this.fin = fecha[1] ? fecha[1] : '';
     let busqueda: any = {
       page: this.page - 1,
       page_size: this.pageSize,
       inicio: this.inicio,
       fin: this.fin,
     };
-    if (this.tipoCliente == "negocio") {
+    if (this.tipoCliente === 'negocio') {
       busqueda = {
         ...busqueda,
         negocio: 1,
         identificacion: this.identificacion,
       };
-    } else if (this.tipoCliente == "cliente") {
+    } else if (this.tipoCliente === 'cliente') {
       busqueda = {
         ...busqueda,
         cliente: 1,
@@ -82,13 +95,15 @@ export class CrosselingComponent implements OnInit {
       this.collectionSize = info.cont;
     });
   }
+
   transformarFecha(fecha) {
-    let nuevaFecha = this.datePipe.transform(fecha, "yyyy-MM-dd");
-    return nuevaFecha;
+    return this.datePipe.transform(fecha, 'yyyy-MM-dd');
   }
+
   obtenerURLImagen(url) {
     return this.globalParam.obtenerURL(url);
   }
+
   obtenerUltimosProductos(id) {
     return this.crossService.obtenerUltimosProductos(id).subscribe((info) => {
       info.map((prod) => {
@@ -97,13 +112,14 @@ export class CrosselingComponent implements OnInit {
       this.ultimosProductos = info;
     });
   }
+
   obtenerProductosPrediccion(id) {
     this.crossService.obtenerProductosPrediccion(id).subscribe((info) => {
-      if ("negocio" in info) {
-        this.tipoClienteModal = "negocio";
+      if ('negocio' in info) {
+        this.tipoClienteModal = 'negocio';
         info.negocio.imagen = this.obtenerURLImagen(info.negocio.imagen);
       } else {
-        this.tipoClienteModal = "cliente";
+        this.tipoClienteModal = 'cliente';
         info.cliente.imagen = this.obtenerURLImagen(info.cliente.imagen);
       }
 
@@ -116,41 +132,43 @@ export class CrosselingComponent implements OnInit {
       this.prediccion = info;
     });
   }
+
   exportarExcel() {
     this.infoExportar = [];
     const headers = [
-      "Código",
-      "Fecha de predicción",
-      "Nombre Cliente",
-      "Apellido Cliente",
-      "Identificación",
-      "#Contacto",
-      "Correo",
-      "Fecha última compra",
-      "Monto última compra",
+      'Código',
+      'Fecha de predicción',
+      'Nombre Cliente',
+      'Apellido Cliente',
+      'Identificación',
+      '#Contacto',
+      'Correo',
+      'Fecha última compra',
+      'Monto última compra',
     ];
-    let objetoExportar = Object.create(this.listaPredicciones);
+    const objetoExportar = Object.create(this.listaPredicciones);
     objetoExportar.forEach((row: any) => {
       const values = [];
-      values.push(row["id"]);
-      values.push(this.transformarFecha(row["fechaPredicciones"]));
-      values.push(row["nombres"]);
-      values.push(row["apellidos"]);
-      values.push(row["identificacion"]);
-      values.push(row["telefono"]);
-      values.push(row["correo"]);
-      values.push(this.transformarFecha(row["created_at"]));
-      values.push(row["total"]);
+      values.push(row['id']);
+      values.push(this.transformarFecha(row['fechaPredicciones']));
+      values.push(row['nombres']);
+      values.push(row['apellidos']);
+      values.push(row['identificacion']);
+      values.push(row['telefono']);
+      values.push(row['correo']);
+      values.push(this.transformarFecha(row['created_at']));
+      values.push(row['total']);
       this.infoExportar.push(values);
     });
     const reportData = {
-      title: "Reporte de Predicciones de Crosseling",
+      title: 'Reporte de Predicciones de Crosseling',
       data: this.infoExportar,
       headers,
     };
 
     this.exportFile.exportExcel(reportData);
   }
+
   abrirModal(modal, id) {
     /* this.ofertaId = id; */
     this.modalService.open(modal);

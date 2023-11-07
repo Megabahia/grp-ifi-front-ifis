@@ -1,25 +1,31 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgbModal, NgbPagination } from '@ng-bootstrap/ng-bootstrap';
-import { DatePipe } from '@angular/common';
-import { CategoriasService } from '../../productos/categorias-productos/categorias.service';
-import { SubcategoriasService } from '../../productos/subcategorias-productos/subcategorias.service';
-import { ProductosService } from '../../productos/productos.service';
-import { ExportService } from 'app/services/export/export.service';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {NgbPagination} from '@ng-bootstrap/ng-bootstrap';
+import {DatePipe} from '@angular/common';
+import {CategoriasService} from '../../productos/categorias-productos/categorias.service';
+import {SubcategoriasService} from '../../productos/subcategorias-productos/subcategorias.service';
+import {ProductosService} from '../../productos/productos.service';
+import {ExportService} from 'app/services/export/export.service';
+
+/**
+ * IFIS
+ * ifis
+ * ESta pantalla sirve para generar un reporte de stock
+ * rutas:
+ * `${apiUrl}/mdp/productos/stock/list/`,
+ */
 
 @Component({
   selector: 'app-stock',
   templateUrl: './stock.component.html',
   providers: [DatePipe]
 })
-export class StockComponent implements OnInit {
+export class StockComponent implements OnInit, AfterViewInit {
   @ViewChild(NgbPagination) paginator: NgbPagination;
   menu;
-  inicio = "";
-  fin = "";
-  categoria = "";
-  categoriasOpciones;
-  subcategoria = "";
-  subcategoriasOpciones;
+  inicio = '';
+  fin = '';
+  categoria = '';
+  subcategoria = '';
   page = 1;
   pageSize: any = 10;
   maxSize;
@@ -33,24 +39,27 @@ export class StockComponent implements OnInit {
     private productosService: ProductosService,
     private exportFile: ExportService,
     private datePipe: DatePipe,
-
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.menu = {
-      modulo: "mdp",
-      seccion: "stockRep"
+      modulo: 'mdp',
+      seccion: 'stockRep'
     };
     this.obtenerListaProductos();
   }
+
   async ngAfterViewInit() {
     this.iniciarPaginador();
   }
+
   async iniciarPaginador() {
     this.paginator.pageChange.subscribe(() => {
       this.obtenerListaProductos();
     });
   }
+
   obtenerListaProductos() {
     this.productosService.obtenerListaStock({
       inicio: this.inicio,
@@ -64,6 +73,7 @@ export class StockComponent implements OnInit {
       this.collectionSize = info.cont;
     });
   }
+
   exportarExcel() {
     this.infoExportar = [];
     const headers = ['Código de Barras', 'Nombre', 'Categoría', 'Subcategoría', 'Stock', 'Ultima Fecha de Stock', 'Monto de Compra'];
@@ -87,9 +97,9 @@ export class StockComponent implements OnInit {
 
     this.exportFile.exportExcel(reportData);
   }
+
   transformarFecha(fecha) {
-    let nuevaFecha = this.datePipe.transform(fecha, 'yyyy-MM-dd');
-    return nuevaFecha;
+    return this.datePipe.transform(fecha, 'yyyy-MM-dd');
   }
 
 }

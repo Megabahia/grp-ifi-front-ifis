@@ -1,18 +1,27 @@
-import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { CoreMenuService } from '@core/components/core-menu/core-menu.service';
-import { NgbPagination } from '@ng-bootstrap/ng-bootstrap';
-import { User } from 'app/auth/models';
-import { Subject } from 'rxjs';
-import { MisMonedasService } from './mis-monedas.service';
+import {DatePipe} from '@angular/common';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {CoreMenuService} from '@core/components/core-menu/core-menu.service';
+import {NgbPagination} from '@ng-bootstrap/ng-bootstrap';
+import {User} from 'app/auth/models';
+import {Subject} from 'rxjs';
+import {MisMonedasService} from './mis-monedas.service';
+
+/**
+ * IFIS
+ * Personas
+ * Esta pantalla sirve para mostrar mis monedas
+ * Rutas:
+ * `${environment.apiUrl}/core/monedas/usuario/${id}`
+ * `${environment.apiUrl}/core/monedas/list/`,
+ */
 
 @Component({
   selector: 'app-mis-monedas',
   templateUrl: './mis-monedas.component.html',
   styleUrls: ['./mis-monedas.component.scss'],
-  providers:[DatePipe]
+  providers: [DatePipe]
 })
-export class MisMonedasComponent implements OnInit {
+export class MisMonedasComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(NgbPagination) paginator: NgbPagination;
   public page = 1;
   public page_size: any = 10;
@@ -22,11 +31,11 @@ export class MisMonedasComponent implements OnInit {
   public usuario: User;
   public cantidadMonedas;
   private _unsubscribeAll: Subject<any>;
+
   constructor(
     private _misMonedasService: MisMonedasService,
     private _coreMenuService: CoreMenuService,
-    private datePipe:DatePipe
-
+    private datePipe: DatePipe
   ) {
     this._unsubscribeAll = new Subject();
     this.usuario = this._coreMenuService.grpIfisUser;
@@ -38,6 +47,7 @@ export class MisMonedasComponent implements OnInit {
       this.cantidadMonedas = info.saldo;
     });
   }
+
   ngAfterViewInit() {
     this.iniciarPaginador();
 
@@ -52,15 +62,17 @@ export class MisMonedasComponent implements OnInit {
       this.collectionSize = info.cont;
     });
   }
+
   iniciarPaginador() {
     this.paginator.pageChange.subscribe(() => {
       this.obtenerListaMonedas();
     });
   }
+
   transformarFecha(fecha) {
-    let nuevaFecha = this.datePipe.transform(fecha, 'yyyy-MM-dd');
-    return nuevaFecha;
+    return this.datePipe.transform(fecha, 'yyyy-MM-dd');
   }
+
   ngOnDestroy(): void {
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next();

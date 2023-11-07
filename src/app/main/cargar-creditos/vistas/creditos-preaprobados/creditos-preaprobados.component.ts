@@ -1,14 +1,24 @@
-import {Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {CoreMenuService} from '@core/components/core-menu/core-menu.service';
 import {NgbModal, NgbPagination} from '@ng-bootstrap/ng-bootstrap';
 import {SwiperConfigInterface} from 'ngx-swiper-wrapper';
 import {Subject} from 'rxjs';
-import {CobroMonedas} from '../../models/cargar-creditos';
 import * as XLSX from 'xlsx-js-style';
 
 type AOA = any[][];
 import moment from 'moment';
 import {CargarCreditosPreAprobadosService} from './creditos-preaprobados.service';
+
+/**
+ * IFIS
+ * Ifis
+ * Esta pantalla sirve para cargar los creditos preaprobados
+ * Rutas:
+ * `${environment.apiUrl}/corp/creditoArchivos/create/`,
+ * `${environment.apiUrl}/corp/creditoArchivos/delete/${id}`
+ * `${environment.apiUrl}/corp/creditoArchivos/upload/creditos/preaprobados/${id}`,
+ * `${environment.apiUrl}/corp/creditoArchivos/list/`,
+ */
 
 @Component({
   selector: 'app-cargar-creditos-preaprobados',
@@ -17,7 +27,7 @@ import {CargarCreditosPreAprobadosService} from './creditos-preaprobados.service
   encapsulation: ViewEncapsulation.None,
   host: {class: 'ecommerce-application'}
 })
-export class CargarCreditosPreAprobadosComponent implements OnInit {
+export class CargarCreditosPreAprobadosComponent implements OnInit, OnDestroy {
   @ViewChild('mensajeModal') mensajeModal;
   @ViewChild(NgbPagination) paginator: NgbPagination;
 
@@ -28,15 +38,12 @@ export class CargarCreditosPreAprobadosComponent implements OnInit {
   public maxSize;
   public collectionSize;
   public contentHeader: object;
-  public cobroMonedas: CobroMonedas;
-  public listaCobros;
   public submitted = false;
   public archivo = true;
   public nombreArchivo = 'Seleccionar archivo';
   public mensaje = '';
   public wishlist;
   public nuevaImagen = new FormData();
-  public cartList;
   public relatedProducts;
   public productos;
   public producto;

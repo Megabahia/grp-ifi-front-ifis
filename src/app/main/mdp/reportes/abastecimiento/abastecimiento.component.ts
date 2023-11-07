@@ -1,17 +1,25 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgbModal, NgbPagination } from '@ng-bootstrap/ng-bootstrap';
-import { DatePipe } from '@angular/common';
-import { CategoriasService } from '../../productos/categorias-productos/categorias.service';
-import { SubcategoriasService } from '../../productos/subcategorias-productos/subcategorias.service';
-import { ProductosService } from '../../productos/productos.service';
-import { ExportService } from 'app/services/export/export.service';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {NgbPagination} from '@ng-bootstrap/ng-bootstrap';
+import {DatePipe} from '@angular/common';
+import {CategoriasService} from '../../productos/categorias-productos/categorias.service';
+import {SubcategoriasService} from '../../productos/subcategorias-productos/subcategorias.service';
+import {ProductosService} from '../../productos/productos.service';
+import {ExportService} from 'app/services/export/export.service';
+
+/**
+ * IFIS
+ * ifis
+ * ESta pantalla sirve para generar un reporte de abastecimiento
+ * Rutas:
+ * `${apiUrl}/mdp/productos/abastecimiento/list/`,
+ */
 
 @Component({
   selector: 'app-productos-abastecimiento',
   templateUrl: './abastecimiento.component.html',
-  providers:[DatePipe]
+  providers: [DatePipe]
 })
-export class AbastecimientoComponent implements OnInit {
+export class AbastecimientoComponent implements OnInit, AfterViewInit {
   @ViewChild(NgbPagination) paginator: NgbPagination;
 
   menu;
@@ -19,37 +27,40 @@ export class AbastecimientoComponent implements OnInit {
   pageSize: any = 10;
   maxSize;
   collectionSize;
-  inicio= "";
-  fin = "";
-  categoria= "";
-  categoriasOpciones;
-  subcategoria = "";
-  subcategoriasOpciones;
+  inicio = '';
+  fin = '';
+  categoria = '';
+  subcategoria = '';
   listaProductos;
   infoExportar;
+
   constructor(
     private categoriasService: CategoriasService,
     private subcategoriasService: SubcategoriasService,
     private productosService: ProductosService,
     private datePipe: DatePipe,
     private exportFile: ExportService,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.menu = {
-      modulo: "mdp",
-      seccion: "abastRep"
+      modulo: 'mdp',
+      seccion: 'abastRep'
     };
     this.obtenerListaProductos();
   }
+
   async ngAfterViewInit() {
     this.iniciarPaginador();
   }
+
   async iniciarPaginador() {
     this.paginator.pageChange.subscribe(() => {
       this.obtenerListaProductos();
     });
   }
+
   obtenerListaProductos() {
     this.productosService.obtenerListaAbastecimiento(
       {
@@ -68,7 +79,7 @@ export class AbastecimientoComponent implements OnInit {
 
   exportarExcel() {
     this.infoExportar = [];
-    const headers = ['Código de Barras', 'Nombre', 'Categoría', 'Subcategoría', 'Stock', 'Alerta de Abastecimiento' , 'Cantidad sugerida de Stock', 'Fecha máxima de stock'];
+    const headers = ['Código de Barras', 'Nombre', 'Categoría', 'Subcategoría', 'Stock', 'Alerta de Abastecimiento', 'Cantidad sugerida de Stock', 'Fecha máxima de stock'];
     this.listaProductos.forEach((row: any) => {
 
       const values = [];
@@ -90,8 +101,8 @@ export class AbastecimientoComponent implements OnInit {
 
     this.exportFile.exportExcel(reportData);
   }
+
   transformarFecha(fecha) {
-    let nuevaFecha = this.datePipe.transform(fecha, 'yyyy-MM-dd');
-    return nuevaFecha;
+    return this.datePipe.transform(fecha, 'yyyy-MM-dd');
   }
 }

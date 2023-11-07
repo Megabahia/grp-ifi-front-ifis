@@ -1,19 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { first, takeUntil } from 'rxjs/operators';
-import { CoreConfigService } from '../../../../@core/services/config.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { AuthenticationService } from '../../../auth/service/authentication.service';
-import {environment} from "../../../../environments/environment";
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Validators, FormBuilder, FormGroup} from '@angular/forms';
+import {first, takeUntil} from 'rxjs/operators';
+import {CoreConfigService} from '../../../../@core/services/config.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subject} from 'rxjs';
+import {AuthenticationService} from '../../../auth/service';
+import {environment} from '../../../../environments/environment';
 
+/*
+* IFIS
+* ifis
+* ESta pantalla sirve para iniciar sesion en la aplicacion
+* Rutas:
+* `${environment.apiUrl}/central/auth/login/`
+* `${environment.apiUrl}/central/usuarios/create/`,
+* `${environment.apiUrl}/central/auth/loginFacebook/`
+*/
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   //  Public
   public coreConfig: any;
   public loginForm: FormGroup;
@@ -22,23 +31,12 @@ export class LoginComponent implements OnInit {
   public returnUrl: string;
   public error = '';
   public passwordTextType: boolean;
-  public startDateOptions = {
-    altInput: true,
-    mode: 'single',
-    altInputClass: 'form-control flat-picker flatpickr-input invoice-edit-input',
-    enableTime: true
-  };
 
   // Private
   private _unsubscribeAll: Subject<any>;
   public captcha: boolean;
   public siteKey: string;
 
-  /**
-   * Constructor
-   *
-   * @param {CoreConfigService} _coreConfigService
-   */
   constructor(
     private _coreConfigService: CoreConfigService,
     private _formBuilder: FormBuilder,
@@ -101,8 +99,8 @@ export class LoginComponent implements OnInit {
           this._router.navigate([this.returnUrl]);
         },
         error => {
-        
-          this.error = "Fallo en la autenticación, vuelva a intentarlo";
+
+          this.error = 'Fallo en la autenticación, vuelva a intentarlo';
           this.loading = false;
         }
       );

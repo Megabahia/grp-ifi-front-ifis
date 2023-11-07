@@ -1,4 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+
+/**
+ * Bigpuntos
+ * ifis
+ * Esta pantalla sirve para cargar personas
+ * Rutas:
+ * No tiene llamados a rutas
+ */
 
 @Component({
   selector: 'app-personas-load',
@@ -6,12 +14,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PersonasLoadComponent implements OnInit {
   menu;
-  constructor() { }
+
+  constructor() {
+  }
 
   ngOnInit(): void {
     this.menu = {
-      modulo:"mdm",
-      seccion: "clientesLoad"
+      modulo: 'mdm',
+      seccion: 'clientesLoad'
     };
   }
 

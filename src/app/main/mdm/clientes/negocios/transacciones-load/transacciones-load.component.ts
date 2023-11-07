@@ -1,4 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+
+/**
+ * IFIS
+ * ifis
+ * ESta pantalla sirve para cargar las transacciones
+ * Rutas:
+ * no tiene llamado a rutas
+ */
 
 @Component({
   selector: 'app-transacciones-load',
@@ -6,12 +14,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TransaccionesLoadComponent implements OnInit {
   menu;
-  constructor() { }
+
+  constructor() {
+  }
 
   ngOnInit(): void {
     this.menu = {
-      modulo:"mdm",
-      seccion: "negociosTransacLoad"
+      modulo: 'mdm',
+      seccion: 'negociosTransacLoad'
     };
   }
 

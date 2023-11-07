@@ -1,5 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { ProductosService } from '../productos.service';
+import {Component, OnInit} from '@angular/core';
+import {ProductosService} from '../productos.service';
+
+/**
+ * IFIS
+ * ifis
+ * Esta pantalla sirve para actualizar el stock de los productos
+ * Rutas:
+ * `${apiUrl}/mdp/productos/upload/excel/`,
+ */
 
 @Component({
   selector: 'app-actualizar-stock',
@@ -11,21 +19,23 @@ export class ActualizarStockComponent implements OnInit {
 
   constructor(
     private productosService: ProductosService,
-    
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.menu = {
-      modulo:"mdp",
-      seccion: "stockAct"
+      modulo: 'mdp',
+      seccion: 'stockAct'
     };
   }
-  cargarArchivo(event){
+
+  cargarArchivo(event) {
     this.archivo = new FormData();
-    this.archivo.append('documento',event.target.files[0]);
+    this.archivo.append('documento', event.target.files[0]);
   }
-  cargarStock(){
-    this.productosService.cargarStock(this.archivo).subscribe((info)=>{
+
+  cargarStock() {
+    this.productosService.cargarStock(this.archivo).subscribe((info) => {
       console.log(info);
     });
   }

@@ -1,4 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+
+/**
+ * IFIS
+ * Ifis
+ * Esta pantalla sirve para cargar negocios en base a csv o excel
+ */
 
 @Component({
   selector: 'app-negocios-load',
@@ -7,12 +13,14 @@ import { Component, OnInit } from '@angular/core';
 export class NegociosLoadComponent implements OnInit {
 
   menu;
-  constructor() { }
+
+  constructor() {
+  }
 
   ngOnInit(): void {
     this.menu = {
-      modulo:"mdm",
-      seccion: "negociosLoad"
+      modulo: 'mdm',
+      seccion: 'negociosLoad'
     };
   }
 }

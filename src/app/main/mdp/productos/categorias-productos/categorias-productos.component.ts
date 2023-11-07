@@ -1,15 +1,28 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Categoria, CategoriasService } from './categorias.service';
-import { ParamService } from 'app/services/param/param.service';
-import { CoreSidebarService } from '@core/components/core-sidebar/core-sidebar.service';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Categoria, CategoriasService} from './categorias.service';
+import {ParamService} from 'app/services/param/param.service';
+import {CoreSidebarService} from '@core/components/core-sidebar/core-sidebar.service';
+
+/**
+ * IFIS
+ * ifis
+ * Esta pantalla sirve para buscar categorias de los productos
+ * Rutas:
+ * `${apiUrl}/central/param/list/estado/`
+ * `${apiUrl}/mdp/categorias/list/`,
+ * `${apiUrl}/mdp/categorias/listOne/${id}`
+ * `${apiUrl}/mdp/categorias/create/`,
+ * `${apiUrl}/mdp/categorias/update/${datos.id}`,
+ * `${apiUrl}/mdp/categorias/delete/${id}`
+ */
 
 @Component({
   selector: 'app-categorias-productos',
   templateUrl: './categorias-productos.component.html'
 })
-export class CategoriasProductosComponent implements OnInit {
+export class CategoriasProductosComponent implements OnInit, AfterViewInit {
   @ViewChild('dismissModal') dismissModal;
   @ViewChild('aviso') aviso;
   paramForm: FormGroup;
@@ -19,23 +32,24 @@ export class CategoriasProductosComponent implements OnInit {
   maxSize: any;
   collectionSize: any;
   listaCategorias: any;
-  categoria:Categoria;
+  categoria: Categoria;
   funcion: string;
   submitted: boolean;
   idCategoria: any;
   mensaje: string;
   estados;
+
   constructor(
     private modalService: NgbModal,
-    private categoriasService:CategoriasService,
-    private paramService:ParamService,
+    private categoriasService: CategoriasService,
+    private paramService: ParamService,
     private _formBuilder: FormBuilder,
     private _coreSidebarService: CoreSidebarService,
   ) {
     this.categoria = categoriasService.inicializarCategoria();
-   }
-  
-   get f() {
+  }
+
+  get f() {
     return this.paramForm.controls;
   }
 
@@ -53,71 +67,76 @@ export class CategoriasProductosComponent implements OnInit {
       estado: ['', [Validators.required]]
     });
     this.menu = {
-      modulo:"mdp",
-      seccion: "cat"
+      modulo: 'mdp',
+      seccion: 'cat'
     };
     this.obtenerListaCategorias();
   }
-  async obtenerListaCategorias(){
+
+  async obtenerListaCategorias() {
     await this.categoriasService.obtenerCategorias({
-     page:this.page - 1, 
-     page_size:this.pageSize
-    }).subscribe((info)=>{
+      page: this.page - 1,
+      page_size: this.pageSize
+    }).subscribe((info) => {
       this.listaCategorias = info.info;
       this.collectionSize = info.cont;
     });
   }
-  async crearCategoria(name?){
+
+  async crearCategoria(name?) {
     this.categoria = this.categoriasService.inicializarCategoria();
     this.funcion = 'insertar';
     this.submitted = false;
     this._coreSidebarService.getSidebarRegistry(name).toggleOpen();
   }
 
-  editarCategoria(id,name?){
+  editarCategoria(id, name?) {
     this.funcion = 'editar';
     this.submitted = false;
-    this.categoriasService.obtenerCategoria(id).subscribe((info)=>{
+    this.categoriasService.obtenerCategoria(id).subscribe((info) => {
       this.categoria = info;
     });
     this._coreSidebarService.getSidebarRegistry(name).toggleOpen();
   }
-  
-  async guardarCategoria(){
+
+  async guardarCategoria() {
     this.submitted = true;
     if (this.paramForm.invalid) {
       return;
     }
-    if (this.funcion == "insertar") {
+    if (this.funcion === 'insertar') {
       // delete this.categoria.id
-      await this.categoriasService.crearCategoria(this.categoria).subscribe(()=>{
+      await this.categoriasService.crearCategoria(this.categoria).subscribe(() => {
         this.obtenerListaCategorias();
         // this.dismissModal.nativeElement.click();
         this.submitted = false;
-        this.mensaje = "Categoría guardada";
+        this.mensaje = 'Categoría guardada';
         this.abrirModal(this.aviso);
       });
-    }else  if (this.funcion = 'editar'){
-      await this.categoriasService.actualizarCategoria(this.categoria).subscribe(()=>{
+    } else if (this.funcion === 'editar') {
+      await this.categoriasService.actualizarCategoria(this.categoria).subscribe(() => {
         this.obtenerListaCategorias();
         // this.dismissModal.nativeElement.click();
         this.submitted = false;
-        this.mensaje = "Categoría editada";
+        this.mensaje = 'Categoría editada';
         this.abrirModal(this.aviso);
       });
     }
   }
+
   abrirModal(modal, id = null) {
     this.idCategoria = id;
-    this.modalService.open(modal)
+    this.modalService.open(modal);
   }
+
   cerrarModal() {
     this.modalService.dismissAll();
     this.categoriasService.eliminarCategoria(this.idCategoria).subscribe(() => {
       this.obtenerListaCategorias();
     });
   }
-  cerrarModalCore(name){
+
+  cerrarModalCore(name) {
     this._coreSidebarService.getSidebarRegistry(name).toggleOpen();
   }
 

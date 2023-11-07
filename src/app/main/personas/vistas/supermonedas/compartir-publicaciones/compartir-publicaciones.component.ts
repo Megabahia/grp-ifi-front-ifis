@@ -1,8 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
-import { CompartirPublicacionesService } from './compartir-publicaciones.service';
-import { DatePipe } from '@angular/common';
-import { CoreMenuService } from '../../../../../../@core/components/core-menu/core-menu.service';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {Subject} from 'rxjs';
+import {CompartirPublicacionesService} from './compartir-publicaciones.service';
+import {DatePipe} from '@angular/common';
+import {CoreMenuService} from '../../../../../../@core/components/core-menu/core-menu.service';
+
+/**
+ * IFIS
+ * ifis
+ * Esta pantalla sirve para mostrar las publicaciones
+ * Rutas:
+ * `${environment.apiUrl}/central/param/list/listOne`,
+ * `${environment.apiUrl}/corp/empresas/listOne/filtros/`,
+ * `${environment.apiUrl}/central/publicaciones/list/`,
+ * `${environment.apiUrl}/central/publicaciones/compartir/`,
+ */
 
 @Component({
   selector: 'app-compartir-publicaciones',
@@ -10,7 +21,7 @@ import { CoreMenuService } from '../../../../../../@core/components/core-menu/co
   styleUrls: ['./compartir-publicaciones.component.scss'],
   providers: [DatePipe]
 })
-export class CompartirPublicacionesComponent implements OnInit {
+export class CompartirPublicacionesComponent implements OnInit, AfterViewInit, OnDestroy {
   public page = 1;
   public page_size: any = 10;
   public maxSize;
@@ -20,12 +31,8 @@ export class CompartirPublicacionesComponent implements OnInit {
   private _unsubscribeAll: Subject<any>;
 
   constructor(
-
     private _coreMenuService: CoreMenuService,
-
     private _compartirPublicacionesService: CompartirPublicacionesService,
-    private datePipe: DatePipe,
-
   ) {
     this._unsubscribeAll = new Subject();
     this.usuario = this._coreMenuService.grpIfisUser;
@@ -33,6 +40,7 @@ export class CompartirPublicacionesComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
   ngAfterViewInit() {
 
     this.obtenerListaPublicaciones();
@@ -46,14 +54,7 @@ export class CompartirPublicacionesComponent implements OnInit {
       this.collectionSize = info.cont;
     });
   }
-  obtenerMes(fecha) {
-    let nuevaFecha = this.datePipe.transform(fecha, 'MMM');
-    return nuevaFecha;
-  }
-  obtenerDia(fecha) {
-    let nuevaFecha = this.datePipe.transform(fecha, 'd');
-    return nuevaFecha;
-  }
+
   compartirPublicacion(id) {
     this._compartirPublicacionesService.guardarPublicacion({
       user: this.usuario.id,

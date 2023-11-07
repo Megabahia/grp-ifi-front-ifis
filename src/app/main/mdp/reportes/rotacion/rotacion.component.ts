@@ -1,45 +1,54 @@
-import { DatePipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgbModal, NgbPagination } from '@ng-bootstrap/ng-bootstrap';
-import { ExportService } from 'app/services/export/export.service';
-import { ProductosService } from '../../productos/productos.service';
+import {DatePipe} from '@angular/common';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {NgbPagination} from '@ng-bootstrap/ng-bootstrap';
+import {ExportService} from 'app/services/export/export.service';
+import {ProductosService} from '../../productos/productos.service';
 
+/**
+ * IFIS
+ * ifis
+ * Esta pantalla sirve para generar un reporte de rotacion
+ * rutas:
+ * `${apiUrl}/mdp/productos/rotacion/list/`,
+ */
 @Component({
   selector: 'app-rotacion',
   templateUrl: './rotacion.component.html',
-  providers:[DatePipe]
+  providers: [DatePipe]
 })
-export class RotacionComponent implements OnInit {
+export class RotacionComponent implements OnInit, AfterViewInit {
   @ViewChild(NgbPagination) paginator: NgbPagination;
   menu;
-  inicio = "";
-  fin = "";
-  categoria = "";
-  categoriasOpciones;
-  subcategoria = "";
-  subcategoriasOpciones;
+  inicio = '';
+  fin = '';
+  categoria = '';
+  subcategoria = '';
   page = 1;
   pageSize: any = 10;
   maxSize;
   collectionSize;
   listaProductos;
   infoExportar;
+
   constructor(
-    private productosService:ProductosService,
+    private productosService: ProductosService,
     private datePipe: DatePipe,
     private exportFile: ExportService,
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.menu = {
-      modulo: "mdp",
-      seccion: "rotaRep"
+      modulo: 'mdp',
+      seccion: 'rotaRep'
     };
   }
+
   async ngAfterViewInit() {
     this.obtenerListaProductos();
     this.iniciarPaginador();
   }
+
   async iniciarPaginador() {
     this.paginator.pageChange.subscribe(() => {
       this.obtenerListaProductos();
@@ -83,9 +92,9 @@ export class RotacionComponent implements OnInit {
 
     this.exportFile.exportExcel(reportData);
   }
+
   transformarFecha(fecha) {
-    let nuevaFecha = this.datePipe.transform(fecha, 'yyyy-MM-dd');
-    return nuevaFecha;
+    return this.datePipe.transform(fecha, 'yyyy-MM-dd');
   }
 
 }

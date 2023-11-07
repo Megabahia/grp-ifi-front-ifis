@@ -4,11 +4,21 @@ import moment from 'moment/moment';
 import {CargarCreditosPreAprobadosService} from '../creditos-preaprobados/creditos-preaprobados.service';
 import {CoreMenuService} from '../../../../../@core/components/core-menu/core-menu.service';
 import {NgbModal, NgbPagination} from '@ng-bootstrap/ng-bootstrap';
-import {CobroMonedas} from '../../models/cargar-creditos';
 import {Subject} from 'rxjs';
 import {SwiperConfigInterface} from 'ngx-swiper-wrapper';
 
 type AOA = any[][];
+
+/**
+ * IFIS
+ * Ifis
+ * Esta pantalla sirve para cargar los microcreditos preaprobados
+ * Rutas:
+ * `${environment.apiUrl}/corp/creditoArchivos/create/`,
+ * `${environment.apiUrl}/corp/creditoArchivos/delete/${id}`
+ * `${environment.apiUrl}/corp/creditoArchivos/upload/creditos/preaprobados/${id}`,
+ * `${environment.apiUrl}/corp/creditoArchivos/list/`,
+ */
 
 @Component({
   selector: 'app-micro-creditos',
@@ -27,15 +37,12 @@ export class MicroCreditosComponent implements OnInit, OnDestroy {
   public maxSize;
   public collectionSize;
   public contentHeader: object;
-  public cobroMonedas: CobroMonedas;
-  public listaCobros;
   public submitted = false;
   public archivo = true;
   public nombreArchivo = 'Seleccionar archivo';
   public mensaje = '';
   public wishlist;
   public archivoMicroCreditos = new FormData();
-  public cartList;
   public relatedProducts;
   public productos;
   public producto;

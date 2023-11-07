@@ -1,12 +1,22 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
-import { ChartOptions, ChartType, ChartDataSets } from "chart.js";
-import { Color, Label } from "ng2-charts";
-import { ClientesService, Transaccion } from "../clientes.service";
-import { DatePipe } from "@angular/common";
+import {Component, OnInit} from '@angular/core';
+import {ChartOptions, ChartType, ChartDataSets} from 'chart.js';
+import {Color, Label} from 'ng2-charts';
+import {ClientesService, Transaccion} from '../clientes.service';
+import {DatePipe} from '@angular/common';
+
+/**
+ * Bigpuntos
+ * Ifis
+ * Esta pantalla sirve para listar las transacciones
+ * Rutas:
+ * `${apiUrl}/mdm/facturas/list/negocio/`,
+ * `${apiUrl}/mdm/facturas/listOne/${id}`
+ * `${apiUrl}/mdm/facturas/list/negocio/grafica/`,
+ */
+
 @Component({
-  selector: "app-transacciones-list",
-  templateUrl: "./transacciones-list.component.html",
+  selector: 'app-transacciones-list',
+  templateUrl: './transacciones-list.component.html',
   providers: [DatePipe],
 })
 export class TransaccionesListComponent implements OnInit {
@@ -18,58 +28,58 @@ export class TransaccionesListComponent implements OnInit {
   inicio = new Date();
   fin = new Date();
   transaccion: Transaccion = {
-    canal: "",
-    cliente: "",
-    correo: "",
-    created_at: "",
+    canal: '',
+    cliente: '',
+    correo: '',
+    created_at: '',
     descuento: 0,
     detalles: [],
-    direccion: "",
-    fecha: "",
+    direccion: '',
+    fecha: '',
     id: 0,
-    identificacion: "",
-    iva: "",
-    nombreVendedor: "",
+    identificacion: '',
+    iva: '',
+    nombreVendedor: '',
     numeroFactura: 0,
-    numeroProductosComprados: "",
-    razonSocial: "",
+    numeroProductosComprados: '',
+    razonSocial: '',
     subTotal: 0,
-    telefono: "",
-    tipoIdentificacion: "",
+    telefono: '',
+    tipoIdentificacion: '',
     total: 0,
-    empresa_id: ""
+    empresa_id: ''
   };
-  basicDemoValue = "2017-01-01";
 
   public barChartOptions: ChartOptions = {
     responsive: true,
     aspectRatio: 1,
   };
   public barChartLabels: Label[] = [
-    "2006",
-    "2007",
-    "2008",
-    "2009",
-    "2010",
-    "2011",
-    "2012",
+    '2006',
+    '2007',
+    '2008',
+    '2009',
+    '2010',
+    '2011',
+    '2012',
   ];
-  public barChartType: ChartType = "line";
+  public barChartType: ChartType = 'line';
   public barChartLegend = true;
   public barChartPlugins = [];
 
   public barChartData: ChartDataSets[] = [];
   public barChartColors: Color[] = [
     {
-      backgroundColor: "#84D0FF",
+      backgroundColor: '#84D0FF',
     },
   ];
   datosTransferencias = {
     data: [],
-    label: "Series A",
+    label: 'Series A',
     fill: false,
-    borderColor: "rgb(75, 192, 192)",
+    borderColor: 'rgb(75, 192, 192)',
   };
+
   constructor(
     private datePipe: DatePipe,
     private clientesService: ClientesService
@@ -79,12 +89,13 @@ export class TransaccionesListComponent implements OnInit {
 
   ngOnInit(): void {
     this.menu = {
-      modulo: "mdm",
-      seccion: "clientesTransac",
+      modulo: 'mdm',
+      seccion: 'clientesTransac',
     };
     this.barChartData = [this.datosTransferencias];
     this.obtenerTransacciones();
   }
+
   obtenerTransacciones() {
     this.clientesService
       .obtenerTodasTrasacciones({
@@ -99,9 +110,9 @@ export class TransaccionesListComponent implements OnInit {
         this.obtenerGraficos();
       });
   }
+
   transformarFecha(fecha) {
-    let nuevaFecha = this.datePipe.transform(fecha, "yyyy-MM-dd");
-    return nuevaFecha;
+    return this.datePipe.transform(fecha, 'yyyy-MM-dd');
   }
 
   async obtenerTransaccion(id) {
@@ -110,6 +121,7 @@ export class TransaccionesListComponent implements OnInit {
       console.log(info);
     });
   }
+
   async obtenerGraficos() {
     this.clientesService
       .obtenerGraficaTransaccionesGeneral({
@@ -119,18 +131,18 @@ export class TransaccionesListComponent implements OnInit {
         fin: this.fin,
       })
       .subscribe((info) => {
-        let etiquetas = [];
-        let valores = [];
+        const etiquetas = [];
+        const valores = [];
 
         info.map((datos) => {
-          etiquetas.push(datos.anio + "-" + datos.mes);
+          etiquetas.push(datos.anio + '-' + datos.mes);
           valores.push(datos.cantidad);
         });
         this.datosTransferencias = {
           data: valores,
-          label: "Series A",
+          label: 'Series A',
           fill: false,
-          borderColor: "rgb(75, 192, 192)",
+          borderColor: 'rgb(75, 192, 192)',
         };
         this.barChartData = [this.datosTransferencias];
         this.barChartLabels = etiquetas;
